@@ -20,12 +20,21 @@ const Layout = () => {
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <MobileSidebar />
-          <div className="w-full flex-1">{/* Add nav bar content here! */}</div>
+          <div className="w-full flex-1">
+            <nav className="hidden md:flex md:items-center md:gap-5 lg:gap-6 text-lg font-medium md:text-sm">
+              {navItems.map((item) => (
+                <NavItem key={item.to} to={item.to}>
+                  {item.title}
+                </NavItem>
+              ))}
+            </nav>
+          </div>
           <UserDropdown />
         </header>
         <main className="flex-grow p-4 overflow-auto">
           <Outlet />
         </main>
+        <Footer />
       </div>
     </div>
   );
@@ -73,6 +82,7 @@ const MobileSidebar = () => (
         </NavLink>
         {navItems.map((item) => (
           <SidebarNavLink key={item.to} to={item.to}>
+            {item.icon}
             {item.title}
           </SidebarNavLink>
         ))}
@@ -92,9 +102,8 @@ const UserDropdown = () => (
     <DropdownMenuContent align="end">
       <DropdownMenuLabel>My Account</DropdownMenuLabel>
       <DropdownMenuSeparator />
+      <DropdownMenuItem>Profile</DropdownMenuItem>
       <DropdownMenuItem>Settings</DropdownMenuItem>
-      <DropdownMenuItem>Support</DropdownMenuItem>
-      <DropdownMenuSeparator />
       <DropdownMenuItem>Logout</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
@@ -112,6 +121,33 @@ const SidebarNavLink = ({ to, children }) => (
   >
     {children}
   </NavLink>
+);
+
+const NavItem = ({ to, children, className }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      cn(
+        "transition-colors",
+        isActive
+          ? "text-foreground"
+          : "text-muted-foreground hover:text-foreground",
+        className,
+      )
+    }
+  >
+    {children}
+  </NavLink>
+);
+
+const Footer = () => (
+  <footer className="border-t bg-muted/40 p-4 text-center text-sm">
+    <nav className="flex justify-center space-x-4">
+      <NavLink to="/privacy-policy">Privacy Policy</NavLink>
+      <NavLink to="/terms-of-service">Terms of Service</NavLink>
+      <NavLink to="/contact">Contact Us</NavLink>
+    </nav>
+  </footer>
 );
 
 export default Layout;
